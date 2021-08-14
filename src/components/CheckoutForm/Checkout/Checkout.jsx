@@ -35,9 +35,7 @@ const Checkout = () => {
       <div className={classes.toolbar} />
       <main className={classes.layout}>
         <Paper className={classes.paper}>
-          <Typography variant="h4" align="center">
-            Checkout
-          </Typography>
+          <Typography variant="h4" align="center"></Typography>
           {/* we used the active step here */}
           <Stepper activeStep={activeStep} className={classes.stepper}>
             {/* mapping through all the steps and we call the steps and map trough it*/}
