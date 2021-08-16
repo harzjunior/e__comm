@@ -30,19 +30,40 @@ const AddressForm = ({ checkoutToken }) => {
     label: name,
   })); //convert an object into 2D array, mapping one more time to turn it into normal array to get the code and name and return an array with object that have id and label
 
+  const subdivisions = Object.entries(shippingSubdivisions).map(
+    ([code, name]) => ({
+      id: code,
+      label: name,
+    })
+  );
+
   //   let's start with countries first, this will accept the checkout token id (it's like getting a receipt in a store)
   const fecthShippingCountries = async (checkoutTokenId) => {
     const { countries } = await commerce.services.localeListShippingCountries(
-      checkoutTokenId // will created in check Component
+      checkoutTokenId // will be created in check Component
     );
     setShippingCountries(countries);
     setShippingCountry(Object.keys(countries)[0]); //get the first county in the array form and by keys (country code names)
+  };
+
+  //accepts one parameters and that's country code
+  const fetchSubdivions = async (countryCode) => {
+    const { subdivisions } = await commerce.services.localeListSubdivisions(
+      countryCode
+    );
+    setShippingSubdivisions(subdivisions);
+    setShippingSubdivision(Object.keys(subdivisions)[0]);
   };
 
   //to get the contries ASAP the function Address runs
   useEffect(() => {
     fecthShippingCountries(checkoutToken.id);
   }, []);
+
+  //reason for the this seconse useEffect is that, the shipping country might not be ready/called yet. it's perfectly okay to have multiple use effects in a single component
+  useEffect(() => {
+    if (shippingCountry) fetchSubdivions(shippingCountry); //whenever shipping country changes, call subdivisions functions only if it exists
+  }, [shippingCountry]); //shippingcountry is a dependancy for subdivivions (when ever the shipping country changes we will call the useEffect). Sometimes the dependancy might be empty therefore we will use IF STATEMENT for if it exists
 
   return (
     <>
@@ -68,7 +89,6 @@ const AddressForm = ({ checkoutToken }) => {
                 fullWidth
                 onChange={(e) => setShippingCountry(e.target.value)}
               >
-                {" "}
                 {countries.map((country) => (
                   <MenuItem key={country.id} value={country.id}>
                     {country.label}
@@ -77,14 +97,19 @@ const AddressForm = ({ checkoutToken }) => {
               </Select>
             </Grid>
 
-            {/* depends on shipping country */}
+            {/* country code depends on shipping country */}
             <Grid item xs={12} sm={6}>
               <InputLabel>Shipping Subdivision</InputLabel>
-              <Select value={""} fullWidth onChange={""}>
-                <MenuItem key={""} value={""}>
-                  Select me
-                </MenuItem>
-                hello
+              <Select
+                value={shippingSubdivision}
+                fullWidth
+                onChange={(e) => setShippingSubdivision(e.target.value)}
+              >
+                {subdivisions.map((subdivision) => (
+                  <MenuItem key={subdivision.id} value={subdivision.id}>
+                    {subdivision.label}
+                  </MenuItem>
+                ))}
               </Select>
             </Grid>
 
