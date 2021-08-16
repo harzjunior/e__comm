@@ -76,7 +76,8 @@ function App() {
           </Route>
           {/* checkout route component*/}
           <Route exact path="/checkout">
-            <Checkout />
+            <Checkout cart={cart} />{" "}
+            {/* passing cart prop to checkout.jsx for the generateToken to use/consume */}
           </Route>
         </Switch>
       </div>
