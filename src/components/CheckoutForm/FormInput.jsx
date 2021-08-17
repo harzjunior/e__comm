@@ -4,7 +4,7 @@ import React from "react";
 import { TextField, Grid } from "@material-ui/core"; //Import the needed stuff from material-UI
 import { useFormContext, Controller } from "react-hook-form"; // react-hook-form.com for this project
 
-const FormInput = ({ name, label, required }) => {
+const FormInput = ({ name, label }) => {
   //calling the controller
   const { control } = useFormContext();
   return (
@@ -13,8 +13,8 @@ const FormInput = ({ name, label, required }) => {
       <Controller
         control={control}
         name={name}
-        // textfiels ass just text
-        render={({ field }) => <TextField fullWidth label={label} required />} 
+        // textfiels as just text
+        render={({ field }) => <TextField fullWidth label={label} />}
       />
     </Grid>
   );
