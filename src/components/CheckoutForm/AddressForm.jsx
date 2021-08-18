@@ -13,8 +13,9 @@ import {
 import { useForm, FormProvider } from "react-hook-form"; // react-hook-form.com for this project
 import FormInput from "./FormInput";
 import { commerce } from "../../lib/commerce.js"; //to use the API features, we need to import the instance (commerce)
+import { Link } from "react-router-dom";
 
-const AddressForm = ({ checkoutToken }) => {
+const AddressForm = ({ checkoutToken, next }) => {
   // fetch all the data from API
   const [shippingCountries, setShippingCountries] = useState([]); //shipping Countries and sets to empty array ---> API , we set up we can ship domestically in Turkey
   const [shippingCountry, setShippingCountry] = useState(""); //a chosen shipping Country and sets to empty string
@@ -106,7 +107,18 @@ const AddressForm = ({ checkoutToken }) => {
       </Typography>
       {/* we gonna spread all the methods from (react-hook-form) */}
       <FormProvider {...methods}>
-        <form onSubmit={""}>
+        {/* react hook form to handle submit that accepts 1 specifically callback function that accepts all the FormInput Data fields,*/}
+        {/* and bring the data to Checkout components which has a function called NEXT which will be pass as a props here and it will have all the properties of the first 6 inputs data. While a spread ( ...data) data will be followed by 3 inputs states (useStates) */}
+        <form
+          onSubmit={methods.handleSubmit((data) =>
+            next({
+              ...data,
+              shippingCountry,
+              shippingSubdivision,
+              shippingOption,
+            })
+          )}
+        >
           {/* grid for seperating all the input field */}
           <Grid container spacing={3}>
             <FormInput name="firstName" label="First Name" />
@@ -114,7 +126,7 @@ const AddressForm = ({ checkoutToken }) => {
             <FormInput name="address1" label="Address" />
             <FormInput name="email" label="Email" />
             <FormInput name="city" label="City" />
-            <FormInput name="ZIP" label="Zip Code / Postal Code" />
+            <FormInput name="zip" label="Postal Code" />
             <Grid item xs={12} sm={6}>
               {/* changes happens from here and the to shipping subdivision */}
               <InputLabel>Shipping Country</InputLabel>
@@ -166,6 +178,16 @@ const AddressForm = ({ checkoutToken }) => {
               </Select>
             </Grid>
           </Grid>
+          <br />
+          {/* Inline Style */}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Button component={Link} to="/cart" variant="outlined">
+              Back to Cart
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              Next
+            </Button>
+          </div>
         </form>
       </FormProvider>
     </>
