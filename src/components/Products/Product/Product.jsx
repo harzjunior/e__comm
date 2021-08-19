@@ -9,18 +9,12 @@ import {
   IconButton,
 } from "@material-ui/core";
 import { AddShoppingCart } from "@material-ui/icons";
-import useStyles from "./styles"; // used material-UI styling for this project
+import useStyles from "./styles";
 
-// destructure the product by {product} instead of props.name and son on
-
-// now we can call the useStyles that we just imported
+// calling useStyles
 const Product = ({ product, onAddToCart }) => {
   const classes = useStyles();
 
-  // eslint-disable-next-line
-  {
-    /* the classes are called from styles.js file inside components/Products/Product */
-  }
   return (
     <Card className={classes.root}>
       <CardMedia

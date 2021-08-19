@@ -8,7 +8,6 @@ const FormInput = ({ name, label }) => {
   //calling the controller
   const { control } = useFormContext();
   return (
-    //two items, xs=12 takes the whole scren while sm=6 displays 2 items
     <Grid item xs={12} sm={6}>
       <Controller
         defaultValue=""

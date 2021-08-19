@@ -1,7 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";     // JSS used material-UI styling for this project
 
-// makeStyles takes one parameter and with an instance return (makeStyles(()=> ({}))), we gonna write our styles
-// root, media (classes.root, classes.media) are all name of classes for material UI and then Export it to the singular proct component to be used
 export default makeStyles(() => ({
   root: {
     maxWidth: "100%",

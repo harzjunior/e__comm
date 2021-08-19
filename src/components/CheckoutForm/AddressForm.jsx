@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import {
   InputLabel,
   Select,
-  Step,
   MenuItem,
   Button,
   Grid,
@@ -16,24 +15,19 @@ import { commerce } from "../../lib/commerce.js"; //to use the API features, we 
 import { Link } from "react-router-dom";
 
 const AddressForm = ({ checkoutToken, next }) => {
-  // fetch all the data from API
-  const [shippingCountries, setShippingCountries] = useState([]); //shipping Countries and sets to empty array ---> API , we set up we can ship domestically in Turkey
-  const [shippingCountry, setShippingCountry] = useState(""); //a chosen shipping Country and sets to empty string
-  const [shippingSubdivisions, setShippingSubdivisions] = useState([]); //shipping subdivisions and sets to empty array---> API, also we can ship internationally to few countries
-  const [shippingSubdivision, setShippingSubdivision] = useState(""); //a chosen shipping subdivisions and sets to string
-  const [shippingOptions, setShippingOptions] = useState([]); //shipping options and sets to empty array ---> API
-  const [shippingOption, setShippingOption] = useState([]); //a chosen shipping otion and sets to empty string
+  const [shippingCountries, setShippingCountries] = useState([]); // domestic default e.g Turkey
+  const [shippingCountry, setShippingCountry] = useState("");
+  const [shippingSubdivisions, setShippingSubdivisions] = useState([]);
+  const [shippingSubdivision, setShippingSubdivision] = useState("");
+  const [shippingOptions, setShippingOptions] = useState([]);
+  const [shippingOption, setShippingOption] = useState([]);
 
-  const methods = useForm(); // all the methods we need to run the form
+  const methods = useForm(); // runs all neede methods
 
-  //looping through
   const countries = Object.entries(shippingCountries).map(([code, name]) => ({
     id: code,
     label: name,
-  })); //convert an object into 2D array, mapping one more time to turn it into normal array to get the code and name and return an array with object that have id and label
-
-  //looping through
-
+  }));
   const subdivisions = Object.entries(shippingSubdivisions).map(
     ([code, name]) => ({
       id: code,
@@ -41,23 +35,19 @@ const AddressForm = ({ checkoutToken, next }) => {
     })
   );
 
-  //looping through. shippingOptions are array by default therefore no need for object entries
   const options = shippingOptions.map((shipOpt) => ({
     id: shipOpt.id,
     label: `${shipOpt.description} - (${shipOpt.price.formatted_with_symbol})`,
   }));
 
-  // console.log(shippingOptions)
-  //Countries... let's start with countries first, this will accept the checkout token id (it's like getting a receipt in a store)
   const fecthShippingCountries = async (checkoutTokenId) => {
     const { countries } = await commerce.services.localeListShippingCountries(
-      checkoutTokenId // will be created in check Component
+      checkoutTokenId
     );
     setShippingCountries(countries);
-    setShippingCountry(Object.keys(countries)[0]); //get the first county in the array form and by keys (country code names)
+    setShippingCountry(Object.keys(countries)[0]);
   };
 
-  //Subdivions accepts one parameters and that's country code
   const fetchSubdivions = async (countryCode) => {
     const { subdivisions } = await commerce.services.localeListSubdivisions(
       countryCode
@@ -66,7 +56,6 @@ const AddressForm = ({ checkoutToken, next }) => {
     setShippingSubdivision(Object.keys(subdivisions)[0]);
   };
 
-  //shipping Options accepts 3 parameters and that's checkouttokenId country and a region sets to null if no data
   const fetchShippingOptions = async (
     checkoutTokenId,
     country,
@@ -75,7 +64,7 @@ const AddressForm = ({ checkoutToken, next }) => {
     const options = await commerce.checkout.getShippingOptions(
       checkoutTokenId,
       { country, region }
-    ); // the options objects {} that specifies in which country and region we are.
+    );
     setShippingOptions(options);
     setShippingOption(options[0].id); // select first avalaible shipping option
   };
@@ -83,13 +72,11 @@ const AddressForm = ({ checkoutToken, next }) => {
   //to get the contries ASAP the function Address runs
   useEffect(() => {
     fecthShippingCountries(checkoutToken.id);
-  }, []);
+  }, [checkoutToken.id]);
 
-  //reason for the this seconse useEffect is that, the shipping country might not be ready/called yet. it's perfectly okay to have multiple use effects in a single component
   useEffect(() => {
-    if (shippingCountry) fetchSubdivions(shippingCountry); //whenever shipping country changes, call subdivisions functions only if it exists
-  }, [shippingCountry]); //shippingcountry is a dependancy of subdivivions (when ever the shipping country changes we will call the useEffect). Sometimes the dependancy might be empty therefore we will use IF STATEMENT for if it exists
-
+    if (shippingCountry) fetchSubdivions(shippingCountry);
+  }, [shippingCountry]);
   //runs affter Subdivision changes
   useEffect(() => {
     if (shippingSubdivision)
@@ -97,18 +84,14 @@ const AddressForm = ({ checkoutToken, next }) => {
         checkoutToken.id,
         shippingCountry,
         shippingSubdivision
-      ); //whenever shipping country changes, call checkoutToken.id, shippingCountry, shippingSubdivision only if it exists
-  }, [shippingSubdivision]); //shippingSubdivision is a dependancy of subdivivions (when ever the shipping Subdivision changes we will call the useEffect). Sometimes the dependancy might be empty therefore we will use IF STATEMENT for if it exists
-
+      );
+  }, [checkoutToken.id, shippingCountry, shippingSubdivision]);
   return (
     <>
       <Typography variant="h6" gutterBottom>
         AddressForm
       </Typography>
-      {/* we gonna spread all the methods from (react-hook-form) */}
       <FormProvider {...methods}>
-        {/* react hook form to handle submit that accepts 1 specifically callback function that accepts all the FormInput Data fields,*/}
-        {/* and bring the data to Checkout components which has a function called NEXT which will be pass as a props here and it will have all the properties of the first 6 inputs data. While a spread ( ...data) data will be followed by 3 inputs states (useStates) */}
         <form
           onSubmit={methods.handleSubmit((data) =>
             next({
@@ -128,7 +111,6 @@ const AddressForm = ({ checkoutToken, next }) => {
             <FormInput name="city" label="City" />
             <FormInput name="zip" label="Postal Code" />
             <Grid item xs={12} sm={6}>
-              {/* changes happens from here and the to shipping subdivision */}
               <InputLabel>Shipping Country</InputLabel>
               <Select
                 value={shippingCountry}
@@ -161,7 +143,6 @@ const AddressForm = ({ checkoutToken, next }) => {
               </Select>
             </Grid>
 
-            {/* depends on shipping Options for Nigeria is free because it is domestic while international costs some fees */}
             <Grid item xs={12} sm={6}>
               <InputLabel>Shipping Options</InputLabel>
               <Select

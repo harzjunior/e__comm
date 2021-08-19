@@ -8,8 +8,6 @@ const Review = ({ checkoutToken }) => {
         Order Summary
       </Typography>
       <List disablePadding></List>{" "}
-      {/* we need to loop through the products we have in our cart from Checkout component inside the generatedToken async function, which is stored by setCheckoutToken as checkoutToken and then passed over to PaymentForm in Form function*/}
-      {/* get 1 specific product in order to display some jsx; */}
       {checkoutToken.live.line_items.map((product) => (
         <ListItem style={{ padding: "10px 0" }} key={product.name}>
           <ListItemText

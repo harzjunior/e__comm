@@ -30,7 +30,6 @@ const CartItem = ({ item, onUpdateCartQuantity, onRemoveFromCart }) => {
       </CardContent>
       <CardActions className={classes.cardActions}>
         <div className={classes.buttons}>
-          {/* onClick{()=> onUpdateCartQuantity()} (on click listner to call back function to call onUpdateCartQuantity and passed in the item id and the new qty) */}
           <Button
             type="button"
             size="small"
@@ -47,7 +46,6 @@ const CartItem = ({ item, onUpdateCartQuantity, onRemoveFromCart }) => {
             +
           </Button>
         </div>
-        {/* onRemoveCart(item.id)} removes the items */}
         <Button
           variant="contained"
           type="button"

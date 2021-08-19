@@ -13,11 +13,9 @@ const Cart = ({
   const classes = useStyles();
 
   const EmptyCart = () => (
-    // when the cart is empty, we wanna show the cart button
     <Typography variant="subtitle1">
       You have no items in your shopping cart, start adding some!
       <Link to="/" className={classes.link}>
-        {" "}
         start adding some!
       </Link>
     </Typography>
@@ -29,7 +27,6 @@ const Cart = ({
         {cart.line_items.map((item) => (
           <Grid item xs={12} sm={4} key={item.id}>
             <CartItem
-              // pass handleUpdateCartQuantity, handleRemoveFromCart as porps for CartItem to use
               item={item}
               onUpdateCartQuantity={handleUpdateCartQuantity}
               onRemoveFromCart={handleRemoveFromCart}
@@ -42,7 +39,6 @@ const Cart = ({
           Subtotal: {cart.subtotal.formatted_with_symbol}
         </Typography>
         <div>
-          {/* onClick={handleEmptyCart} */}
           <Button
             className={classes.emptyButton}
             size="large"

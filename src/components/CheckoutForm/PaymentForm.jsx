@@ -19,27 +19,22 @@ const PaymentForm = ({
   nextStep,
   timeout,
 }) => {
-  //creante handle submit function to finalise the order
   const handleSubmit = async (event, elements, stripe) => {
-    // data wont get cleared after refreshing the webpage
     event.preventDefault();
 
-    // error handling. STRIPE cannot have access with the if condition.
-    if (!stripe || !elements) return; //if nothing happens then we go out of the function
+    // error handling. for STRIPE
+    if (!stripe || !elements) return;
 
-    const cardElement = elements.getElement(CardElement); //get card elements
-    // stripe API to create a payment methods
+    const cardElement = elements.getElement(CardElement);
 
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card: cardElement,
     });
 
-    // if else check condition
     if (error) {
       console.log(error);
-    } //if no error then create an object containingall the data (all the items in the cart, customers, who is buying it, first name, last name and so and store that in orderData )
-    else {
+    } else {
       const orderData = {
         line_items: checkoutToken.live.line_items,
         customer: {
@@ -74,17 +69,13 @@ const PaymentForm = ({
   return (
     <>
       <Review checkoutToken={checkoutToken} />{" "}
-      {/* review of all the things purchased */}
+      {/* review of all purchased items */}
       <Divider />
       <Typography variant="h6" gutterBottom style={{ margin: "20px 0" }}>
-        {/* payment methods */}
         Payment method
       </Typography>
-      {/* here for stripe and a stripePromise function*/}
       <Elements stripe={stripePromise}>
         <ElementsConsumer>
-          {/* call the handleSubmit function that accepts 3 parameters (event) of the click/entire form, then elements and finally stripe. we need all the stripe dependancy for this to work   */}
-
           {({ elements, stripe }) => (
             <form onSubmit={(event) => handleSubmit(event, elements, stripe)}>
               <CardElement />
@@ -92,7 +83,6 @@ const PaymentForm = ({
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <Button variant="outlined" onClick={backStep}>
                   {" "}
-                  {/* onClick backStep has been created as a function in Checkout components, therefore we can pass it over as a prop for this button to use/consume */}
                   Back
                 </Button>
                 <Button
@@ -102,13 +92,10 @@ const PaymentForm = ({
                   color="primary"
                 >
                   Pay {checkoutToken.live.subtotal.formatted_with_symbol}
-                  {/* take the amount from checkoutToken */}
                 </Button>
-                {/* strips disable when no access not it */}
               </div>
             </form>
           )}
-          {/* call back function with 1 more returns that accepts something from stripe. this can be find in stripe documentation website */}
         </ElementsConsumer>
       </Elements>
     </>
